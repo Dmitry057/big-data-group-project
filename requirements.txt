@@ -1,0 +1,4 @@
+pylint
+streamlit
+gdown
+psycopg2-binary
