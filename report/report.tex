@@ -783,24 +783,24 @@ from the last run.
 \toprule
 \textbf{Task} & \textbf{Ivan I.} & \textbf{Kirill S.} & \textbf{Nikita Z.} & \textbf{Dmitry T.} & \textbf{Avg hrs} & \textbf{Deliverables} \\
 \midrule
-Dataset selection \& access            & 25\% & 25\% & 25\% & 25\% & 6  & IoT-23 captures (\href{https://www.kaggle.com/datasets/agungpambudi/network-malware-detection-connection-analysis?select=CTU-IoT-Malware-Capture-44-1conn.log.labeled.csv}{Kaggle Source}) \\
-Stage 1 --- PostgreSQL schema \& load  & 100\% & 0\% & 0\% & 0\% & 20 & \texttt{create\_tables.sql}, \texttt{build\_projectdb.py} \\
-Stage 1 --- Sqoop \& HDFS warehouse    & 100\% & 0\% &  0\% & 0\% & 16 & \texttt{import\_to\_hdfs.sh} \\
-Stage 1 --- Storage benchmark          & 80\% & 0\% &  10\% & 10\% & 12 & \texttt{benchmark\_storage\_*}, CSVs \\
-Stage 2 --- Hive warehouse setup       & 90\% & 0\% & 0\% & 10\% & 18 & \texttt{db.hql}, partitioned tables \\
-Stage 2 --- 7 EDA queries              & 0\% &  0\% & 90\% & 10\% & 24 & \texttt{q1.hql} \dots \texttt{q7.hql} \\
-Stage 2 --- EDA charts \& storytelling & 0\% &  0\% & 80\% & 20\% & 16 & \texttt{output/q*.jpg, q*.csv} \\
-Stage 3 --- Feature pipeline           & 0\% & 100\% & 0\% &  0\% & 28 & \texttt{ml\_data\_preparation.py} \\
-Stage 3 --- Model training \& CV       & 0\% & 90\% &  5\% &  5\% & 32 & \texttt{ml\_models\_training.py}, \texttt{models/} \\
-Stage 3 --- Evaluation                 & 0\% & 80\% & 10\% & 10\% & 14 & \texttt{ml\_evaluation.py}, \texttt{evaluation.csv} \\
-Stage 4 --- Superset dashboard         & 10\% & 10\% & 70\% & 10\% & 20 & Public dashboard \\
-Pipeline orchestration (\texttt{main.sh}) & 60\% & 20\% & 10\% & 10\% & 16 & \texttt{main.sh}, \texttt{stage*.sh} \\
-Repository documentation               & 10\% & 10\% & 10\% & 70\% & 14 & \texttt{README.MD}, \texttt{docs/} \\
-Final report (this document)           &  5\% &  5\% & 5\% & 85\% & 40 & \texttt{report/report.pdf} \\
-Defence presentation                   & 10\% & 20\% & 30\% & 40\% & 24 & \texttt{presentation/presentation.pdf} \\
-QA \& reproducibility checks           & 15\% & 15\% & 15\% & 55\% & 20 & Pipeline re-runs \\
+Dataset selection \& access            & 25\% & 25\% & 25\% & 25\% & 1  & IoT-23 captures (\href{https://www.kaggle.com/datasets/agungpambudi/network-malware-detection-connection-analysis?select=CTU-IoT-Malware-Capture-44-1conn.log.labeled.csv}{Kaggle Source}) \\
+Stage 1 --- PostgreSQL schema \& load  & 100\% & 0\% & 0\% & 0\% & 5  & \texttt{create\_tables.sql}, \texttt{build\_projectdb.py} \\
+Stage 1 --- Sqoop \& HDFS warehouse    & 100\% & 0\% &  0\% & 0\% & 8  & \texttt{import\_to\_hdfs.sh} \\
+Stage 1 --- Storage benchmark          & 80\% & 0\% &  10\% & 10\% & 4  & \texttt{benchmark\_storage\_*}, CSVs \\
+Stage 2 --- Hive warehouse setup       & 90\% & 0\% & 0\% & 10\% & 5  & \texttt{db.hql}, partitioned tables \\
+Stage 2 --- 7 EDA queries              & 0\% &  0\% & 90\% & 10\% & 6  & \texttt{q1.hql} \dots \texttt{q7.hql} \\
+Stage 2 --- EDA charts \& storytelling & 0\% &  0\% & 80\% & 20\% & 2  & \texttt{output/q*.jpg, q*.csv} \\
+Stage 3 --- Feature pipeline           & 0\% & 100\% & 0\% &  0\% & 10 & \texttt{ml\_data\_preparation.py} \\
+Stage 3 --- Model training \& CV       & 0\% & 90\% &  5\% &  5\% & 16 & \texttt{ml\_models\_training.py}, \texttt{models/} \\
+Stage 3 --- Evaluation                 & 0\% & 80\% & 10\% & 10\% & 7  & \texttt{ml\_evaluation.py}, \texttt{evaluation.csv} \\
+Stage 4 --- Superset dashboard         & 10\% & 10\% & 70\% & 10\% & 6  & Public dashboard \\
+Pipeline orchestration (\texttt{main.sh}) & 60\% & 20\% & 10\% & 10\% & 2  & \texttt{main.sh}, \texttt{stage*.sh} \\
+Repository documentation               & 10\% & 10\% & 10\% & 70\% & 4  & \texttt{README.MD}, \texttt{docs/} \\
+Final report (this document)           &  5\% &  5\% & 5\% & 85\% & 8  & \texttt{report/report.pdf} \\
+Defence presentation                   & 10\% & 20\% & 30\% & 40\% & 3  & \texttt{presentation/presentation.pdf} \\
+QA \& reproducibility checks           & 15\% & 15\% & 15\% & 55\% & 5  & Pipeline re-runs \\
 \midrule
-\textbf{Total person-hours}            &      &      &      &      & \textbf{320} & \\
+\textbf{Total person-hours}            &      &      &      &      & \textbf{92} & \\
 \bottomrule
 \end{tabular}
 \caption{Contribution table. Per-row percentages sum to 100\% across the
