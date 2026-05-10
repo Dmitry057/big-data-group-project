@@ -16,6 +16,7 @@
 \usepackage{listings}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
+\usepackage{url}
 
 \hypersetup{
     colorlinks=true,
@@ -68,8 +69,6 @@
     \vspace{0.4cm}
     {\Huge\bfseries at Network Scale\par}
     \vspace{0.6cm}
-    {\Large\itshape An end-to-end Hadoop / Spark pipeline\\
-    over the Aposemat IoT-23 corpus\par}
     \vspace{4cm}
 
     \begin{tabular}{rl}
@@ -165,7 +164,7 @@ re-run every stage from scratch.
 
 \subsection{Where the data comes from}
 
-We used a hand-picked subset of \textbf{Aposemat IoT-23}, a public dataset
+We used a hand-picked subset of \textbf{Aposemat IoT-23} (\href{https://www.kaggle.com/datasets/agungpambudi/network-malware-detection-connection-analysis?select=CTU-IoT-Malware-Capture-44-1conn.log.labeled.csv}{Kaggle Source}, the full dataset is available \cite{dataset_source}), a public dataset
 released by the Stratosphere Lab at Czech Technical University. It's a
 collection of network captures recorded on real IoT devices that were
 either left in their normal state or deliberately infected with a known
@@ -186,7 +185,7 @@ without making the warehouse unmanageable on a 3-node student cluster.
 \toprule
 \textbf{Property} & \textbf{Value} \\
 \midrule
-Total connections (rows) & 25{,}011{,}247 \\
+Total connections (rows) & 25{,}011{,}003 \\
 Distinct captures & 12 \\
 Per-row features (raw Zeek fields) & 23 \\
 Target classes & 7 \\
@@ -223,11 +222,11 @@ Superset dashboard.}
 \textbf{Stage} & \textbf{Input} & \textbf{Output} \\
 \midrule
 Stage 1 & 12 IoT-23 capture CSV files & PostgreSQL tables
-\texttt{captures}, \texttt{network\_connections}; HDFS Parquet/Snappy
-warehouse at \texttt{project/warehouse} \\
+\texttt{captures}, \texttt{network\_connections}; HDFS Parquet+Snappy
+warehouse at \texttt{/user/team30/project/warehouse} \\
 \midrule
 Stage 2 & Sqoop Parquet warehouse on HDFS & Hive database
-\texttt{team30\_projectdb} with bucketed/partitioned tables; 7 result
+\texttt{team30\_projectdb} with bucketed and partitioned tables; 7 result
 tables \texttt{q1\_results}\dots\texttt{q7\_results}; CSV exports in
 \texttt{output/} \\
 \midrule
@@ -237,7 +236,7 @@ Stage 3 & Hive table
 \texttt{output/modelN\_predictions.csv}; metrics
 \texttt{output/evaluation.csv} \\
 \midrule
-Stage 4 & Hive result tables + \texttt{evaluation.csv} & Public Apache
+Stage 4 & Hive result tables + \texttt{evaluation.csv} & Apache
 Superset dashboard \\
 \bottomrule
 \end{tabular}
@@ -682,11 +681,7 @@ we want to add a new metric later.
 
 \subsection{The dashboard}
 
-The defence-day dashboard lives in \textbf{Apache Superset} and connects
-to the cluster's HiveServer2 endpoint at
-\texttt{jdbc:hive2://hadoop-03.uni.innopolis.ru:10001}. It's one public
-dashboard, refreshed on demand against the same result tables that
-Stages 2 and 3 produced. Six sections:
+The dashboard has six sections:
 
 \begin{description}[leftmargin=2em]
     \item[A. Data characteristics.] Headline numbers: 25M rows, 23
@@ -760,29 +755,10 @@ from the last run.
     3 rows) and four huge ones. Fine for analytical scans, painful for
     Spark shuffles --- we worked around it with
     \texttt{repartition(18)} after the read.
-    \item \textbf{Cluster budget vs.\ ML grid size.} We started with the
-    plan from the project brief: three model families, three hyperparameters
-    per model with three values each ($3^{3} = 27$ combinations per model),
-    and a 3-fold cross-validation. On paper that's $3 \times 27 \times 3 =
-    243$ training runs. On the shared Innopolis cluster, where the YARN
-    queue is contended with several other teams and our 25M-row training
-    set takes 8--12 minutes for a single fit on the requested executor
-    profile (6$\times$3$\times$6\,GB), that grid would have meant 30--50
-    hours of wall-clock time --- and we kept getting pre-empted or
-    queue-throttled in the middle of CV runs. After two failed full grids
-    we cut the scope deliberately: two model families (RF, multinomial LR),
-    a $2\times2$ grid per model, and $k=2$ CV. It's not what the brief
-    asked for, but it's what fit in the budget while still letting both
-    models finish a clean held-out evaluation. We've kept the original
-    code path intact so the larger grid can be re-enabled the moment the
-    cluster has spare capacity.
     \item \textbf{Logistic Regression went sideways.} The multinomial LR
     barely beat majority-class on this feature set. We chose to report it
     honestly rather than spend more cycles tuning a model that was
     structurally the wrong fit.
-    \item \textbf{Pushing from the cluster.} The cluster's DNS doesn't
-    resolve \texttt{github.com}, so pushing artefacts up needed a fixed
-    \texttt{HostName} entry in \texttt{\textasciitilde/.ssh/config}.
 \end{itemize}
 
 \subsection{What we'd do next}
@@ -794,10 +770,7 @@ from the last run.
     Random Forest on a feature space that's mostly one-hot dummies.
     \item Wire the trained Random Forest into Spark Structured Streaming
     over the same Hive partitions, so it can score new traffic in near
-    real time.
-    \item Add per-class precision/recall and a confusion-matrix heatmap
-    to the dashboard. Right now the model panel only shows aggregate
-    metrics, which hides where the rare classes go wrong.
+    real time.–
 \end{enumerate}
 
 \subsection{Who did what}
@@ -810,20 +783,20 @@ from the last run.
 \toprule
 \textbf{Task} & \textbf{Ivan I.} & \textbf{Kirill S.} & \textbf{Nikita Z.} & \textbf{Dmitry T.} & \textbf{Avg hrs} & \textbf{Deliverables} \\
 \midrule
-Dataset selection \& access            & 25\% & 25\% & 25\% & 25\% & 6  & IoT-23 captures \\
-Stage 1 --- PostgreSQL schema \& load  & 60\% & 10\% & 10\% & 20\% & 20 & \texttt{create\_tables.sql}, \texttt{build\_projectdb.py} \\
-Stage 1 --- Sqoop \& HDFS warehouse    & 70\% & 10\% &  0\% & 20\% & 16 & \texttt{import\_to\_hdfs.sh} \\
-Stage 1 --- Storage benchmark          & 40\% & 40\% &  0\% & 20\% & 12 & \texttt{benchmark\_storage\_*}, CSVs \\
-Stage 2 --- Hive warehouse setup       & 40\% & 20\% & 20\% & 20\% & 18 & \texttt{db.hql}, partitioned tables \\
-Stage 2 --- 7 EDA queries              & 10\% &  0\% & 80\% & 10\% & 24 & \texttt{q1.hql} \dots \texttt{q7.hql} \\
-Stage 2 --- EDA charts \& storytelling & 10\% &  0\% & 80\% & 10\% & 16 & \texttt{output/q*.jpg, q*.csv} \\
-Stage 3 --- Feature pipeline           & 10\% & 75\% & 10\% &  5\% & 28 & \texttt{ml\_data\_preparation.py} \\
-Stage 3 --- Model training \& CV       & 10\% & 80\% &  5\% &  5\% & 32 & \texttt{ml\_models\_training.py}, \texttt{models/} \\
-Stage 3 --- Evaluation                 & 10\% & 60\% & 20\% & 10\% & 14 & \texttt{ml\_evaluation.py}, \texttt{evaluation.csv} \\
+Dataset selection \& access            & 25\% & 25\% & 25\% & 25\% & 6  & IoT-23 captures (\href{https://www.kaggle.com/datasets/agungpambudi/network-malware-detection-connection-analysis?select=CTU-IoT-Malware-Capture-44-1conn.log.labeled.csv}{Kaggle Source}) \\
+Stage 1 --- PostgreSQL schema \& load  & 100\% & 0\% & 0\% & 0\% & 20 & \texttt{create\_tables.sql}, \texttt{build\_projectdb.py} \\
+Stage 1 --- Sqoop \& HDFS warehouse    & 100\% & 0\% &  0\% & 0\% & 16 & \texttt{import\_to\_hdfs.sh} \\
+Stage 1 --- Storage benchmark          & 80\% & 0\% &  10\% & 10\% & 12 & \texttt{benchmark\_storage\_*}, CSVs \\
+Stage 2 --- Hive warehouse setup       & 90\% & 0\% & 0\% & 10\% & 18 & \texttt{db.hql}, partitioned tables \\
+Stage 2 --- 7 EDA queries              & 0\% &  0\% & 90\% & 10\% & 24 & \texttt{q1.hql} \dots \texttt{q7.hql} \\
+Stage 2 --- EDA charts \& storytelling & 0\% &  0\% & 80\% & 20\% & 16 & \texttt{output/q*.jpg, q*.csv} \\
+Stage 3 --- Feature pipeline           & 0\% & 100\% & 0\% &  0\% & 28 & \texttt{ml\_data\_preparation.py} \\
+Stage 3 --- Model training \& CV       & 0\% & 90\% &  5\% &  5\% & 32 & \texttt{ml\_models\_training.py}, \texttt{models/} \\
+Stage 3 --- Evaluation                 & 0\% & 80\% & 10\% & 10\% & 14 & \texttt{ml\_evaluation.py}, \texttt{evaluation.csv} \\
 Stage 4 --- Superset dashboard         & 10\% & 10\% & 70\% & 10\% & 20 & Public dashboard \\
-Pipeline orchestration (\texttt{main.sh}) & 50\% & 20\% & 10\% & 20\% & 16 & \texttt{main.sh}, \texttt{stage*.sh} \\
+Pipeline orchestration (\texttt{main.sh}) & 60\% & 20\% & 10\% & 10\% & 16 & \texttt{main.sh}, \texttt{stage*.sh} \\
 Repository documentation               & 10\% & 10\% & 10\% & 70\% & 14 & \texttt{README.MD}, \texttt{docs/} \\
-Final report (this document)           &  5\% &  5\% & 10\% & 80\% & 40 & \texttt{report/report.pdf} \\
+Final report (this document)           &  5\% &  5\% & 5\% & 85\% & 40 & \texttt{report/report.pdf} \\
 Defence presentation                   & 10\% & 20\% & 30\% & 40\% & 24 & \texttt{presentation/presentation.pdf} \\
 QA \& reproducibility checks           & 15\% & 15\% & 15\% & 55\% & 20 & Pipeline re-runs \\
 \midrule
@@ -835,15 +808,6 @@ four team members; the \emph{Avg hrs} column is the team-wide
 person-hours spent on each task.}
 \end{table}
 
-\vspace{1cm}
-\hrule
-\vspace{0.4cm}
-\begin{center}
-\small
-\textit{Repository:}
-\href{https://github.com/Dmitry057/big-data-group-project}%
-{github.com/Dmitry057/big-data-group-project} \\
-\textit{Local path on cluster:} \texttt{/home/team30/project30} (user \texttt{team30})
-\end{center}
-
+\bibliographystyle{plain}
+\bibliography{references}
 \end{document}
