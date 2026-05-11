@@ -1,0 +1,95 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: ShellCheck (*.sh)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get update -qq && sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          # Exclude vendored bats-core sources.
+          mapfile -t files < <(git ls-files '*.sh' \
+                              | grep -v '^tests/bats/' \
+                              | grep -v '^\.venv/')
+          if [ ${#files[@]} -eq 0 ]; then
+              echo "no shell files to check"; exit 0
+          fi
+          echo "Checking: ${files[*]}"
+          # SC1091: don't try to resolve sourced files (.venv/.../activate etc.).
+          # SC2155: declare-and-assign style is common in our wrappers.
+          shellcheck --severity=warning --exclude=SC1091,SC2155 "${files[@]}"
+
+  python-lint:
+    name: ruff + pylint (*.py)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install linters
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pylint pyspark==3.4.0
+      - name: Run ruff
+        run: |
+          ruff check scripts/ --exclude scripts/__pycache__ \
+              --select E,F,W,I,B --ignore E501
+      - name: Run pylint (advisory)
+        # pylint is advisory because pyspark stubs are notoriously noisy;
+        # the score is reported but does not gate the build.
+        continue-on-error: true
+        run: |
+          pylint scripts/ --disable=C0114,C0115,C0116,R0913,R0914,W0703 \
+              --exit-zero --output-format=colorized
+
+  latex-build:
+    name: Build report.pdf
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install TeX Live + librsvg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+              texlive-latex-recommended texlive-latex-extra \
+              texlive-fonts-recommended texlive-bibtex-extra biber \
+              cm-super lmodern librsvg2-bin
+      - name: Convert SVG figures to PDF
+        run: |
+          set -e
+          for svg in report/img/*.svg; do
+              rsvg-convert -f pdf -o "${svg%.svg}.pdf" "$svg"
+          done
+      - name: Build report (pdflatex + bibtex + pdflatex × 2)
+        working-directory: report
+        run: |
+          pdflatex -interaction=nonstopmode -halt-on-error report.tex
+          bibtex report || true     # bibliography is optional in this project
+          pdflatex -interaction=nonstopmode -halt-on-error report.tex
+          pdflatex -interaction=nonstopmode -halt-on-error report.tex
+          test -s report.pdf
+      - name: Upload built PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-pdf
+          path: report/report.pdf
+          retention-days: 14
+
+  bats-unit:
+    name: bats unit tests (no cluster)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit suite
+        run: bash scripts/run_tests.sh unit

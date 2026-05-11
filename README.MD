@@ -218,11 +218,87 @@ To re-render the PDF after editing `index.html`:
 
 ---
 
+## Testing
+
+Three layers, each with its own trigger and cost profile:
+
+| Layer | Where | Trigger | What it covers |
+| --- | --- | --- | --- |
+| **1. Lint / unit** | GitHub Actions (`ubuntu-latest`) | every `push` and `pull_request` | ShellCheck on all `.sh`, `ruff` + advisory `pylint` on `scripts/*.py`, `pdflatex` build of `report/report.tex`, and the `tests/unit/*.bats` suite (repo-structure + artifact-schema invariants). |
+| **2. Cluster smoke** | `hadoop-01` (manual) | `bash scripts/run_tests.sh smoke` | PostgreSQL row counts, FK integrity and label coverage; HDFS warehouse sizes; Hive table inventory + partitions; `q1.hql` re-run via `beeline` with row-count diff against `output/q1.csv`; `ml_evaluation.py` re-run on persisted `model{1,2}_predictions.csv`; optional public-dashboard ping. |
+| **3. Full pipeline** | `hadoop-01` (manual) | `bash main.sh` | The full end-to-end pipeline (Stage 1 → 4), including `gdown` of the raw CSVs. Slow, contended on YARN — intentionally not in CI. |
+
+### Layer 1 — GitHub Actions
+
+`.github/workflows/lint.yml` runs four jobs in parallel on `ubuntu-latest`:
+
+- **shellcheck** — every tracked `*.sh` outside `tests/bats/` and `.venv/`.
+- **python-lint** — `ruff` (strict) and `pylint` (advisory, score only) on `scripts/`.
+- **latex-build** — converts the SVG figures to PDF with `rsvg-convert`, then `pdflatex + bibtex + pdflatex × 2` and uploads `report.pdf` as a workflow artifact.
+- **bats-unit** — runs `bash scripts/run_tests.sh unit`, which invokes the vendored `bats-core` over `tests/unit/*.bats`.
+
+Status badge:
+
+```markdown
+[![lint](https://github.com/Dmitry057/big-data-group-project/actions/workflows/lint.yml/badge.svg)](https://github.com/Dmitry057/big-data-group-project/actions/workflows/lint.yml)
+```
+
+### Layer 2 — cluster smoke tests
+
+The smoke suite re-uses what is already on the cluster — it does **not** re-download data and does **not** re-train models. All tests live under `tests/smoke/*.bats` and are gated by `require_cmd` / `require_secret` so they auto-skip on machines without `psql`, `beeline`, `hdfs` or `spark-submit`.
+
+```bash
+# Run everything that applies on the current host:
+bash scripts/run_tests.sh                # unit + smoke
+
+# Just the cluster part:
+bash scripts/run_tests.sh smoke
+
+# A single suite by filename prefix:
+bash scripts/run_tests.sh smoke 02_postgres
+bash scripts/run_tests.sh smoke 05_hive_eda
+
+# Enable the public-dashboard ping:
+DASHBOARD_URL=https://superset.example/dashboard/team30 \
+    bash scripts/run_tests.sh smoke 07_dashboard
+```
+
+The runner exits non-zero on any failed test and prints a colourised summary at the end.
+
+### Layer 3 — full pipeline
+
+```bash
+bash main.sh
+```
+
+This is the contract `stage1.sh → stage2.sh → stage3.sh → stage4.sh` from the project brief: each stage is idempotent, each writes deterministic artefacts into `output/` and `models/`. Intentionally manual — we don't run it on every commit because it re-downloads ~3.39 GB of CSVs and competes for a Spark slot on the shared YARN queue.
+
+### Test layout
+
+```
+tests/
+├── bats/                       # Vendored bats-core + bats-support + bats-assert
+├── helpers/common.bash         # Shared helpers (paths, beeline/psql wrappers, skip helpers)
+├── unit/                       # Runs on cloud + cluster
+│   ├── 01_repo_structure.bats
+│   └── 02_artifacts_schema.bats
+└── smoke/                      # Runs on the cluster only
+    ├── 01_repo_artifacts.bats
+    ├── 02_postgres.bats
+    ├── 03_hdfs_warehouse.bats
+    ├── 04_hive_tables.bats
+    ├── 05_hive_eda_rerun.bats
+    ├── 06_spark_eval_rerun.bats
+    └── 07_dashboard_ping.bats
+```
+
+---
+
 ## What is *not* in this repo (and why)
 
 | Path | Reason |
 | --- | --- |
-| `data/` | Raw IoT-23 CSVs (~737 MB) — kept on the cluster only, per project notes. |
+| `data/` | Raw IoT-23 CSVs (~3.39 GB) — kept on the cluster only, per project notes. |
 | `secrets/` | Hive / Postgres passwords. |
 | `.venv/` | Local Python virtualenv. |
 
