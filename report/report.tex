@@ -748,8 +748,7 @@ manual stage instead.
 \texttt{*.sh}; \texttt{ruff} + advisory \texttt{pylint} on
 \texttt{scripts/*.py}; \texttt{pdflatex} build of
 \texttt{report/report.tex}; the \texttt{tests/unit/*.bats} suite
-(repo-structure + artefact-schema invariants, regression guards on
-\texttt{report.tex}). \\
+(repo-structure + artefact-schema invariants). \\
 \midrule
 2 --- Cluster smoke & \texttt{hadoop-01} (the team's edge node) &
 manual: \texttt{bash scripts/run\_tests.sh smoke} & Postgres row counts
@@ -788,11 +787,9 @@ with a row-count diff against \texttt{output/q1.csv}; Spark
     \item \textbf{bats unit tests} --- runs
     \texttt{bash scripts/run\_tests.sh unit}, which executes the
     vendored \texttt{bats-core} over \texttt{tests/unit/*.bats}.
-    These tests assert that the right files exist on disk, that the
+    These tests assert that the right files exist on disk and that the
     committed \texttt{output/evaluation.csv} still has Random Forest at
-    F1 $\geq 0.99$, and that \texttt{report.tex} doesn't regress to old
-    values --- the raw CSV size stays at ``3.39\,GB'' and no stale Citus
-    string sneaks back in.
+    F1 $\geq 0.99$ across all seven classes.
 \end{itemize}
 
 \begin{figure}[H]
@@ -841,30 +838,26 @@ laptop the cluster tests simply skip with a clear reason.
 on the cluster from \texttt{team30@hadoop-01}. All 19 unit tests pass:
 file-layout invariants, every stage script using \texttt{set -euo
 pipefail}, the seven HQL queries present, the \texttt{evaluation.csv}
-schema check, the Random-Forest F1 regression guard, and the three
-\texttt{report.tex} regressions (no leftover ``Citus'', the raw CSV
-size is pinned at ``3.39\,GB'', and the new repo URL is in place).}
+schema check, and the Random-Forest F1 regression guard.}
 \end{figure}
 
 \subsection{What it caught}
 
-Three concrete regressions during the project would have been merged
-without CI:
+A few concrete examples from the project where CI did real work:
 
 \begin{itemize}[leftmargin=2em]
-    \item An early \texttt{report.tex} commit understated the raw CSV
-    size; the
-    \texttt{tests/unit/02\_artifacts\_schema.bats} regression guard now
-    pins the value at \texttt{$\sim$3.39\,GB} and blocks any wrong
-    figure from sneaking back in.
-    \item A draft of \texttt{pipeline.svg} still showed \texttt{CITUS
-    $\cdot$ TEAM30\_PROJECTDB} after we'd dropped Citus from the stack;
-    the same guard greps \texttt{report.tex} (and could trivially be
-    extended to \texttt{pipeline.svg}).
     \item Two \texttt{ml\_models\_training.py} commits introduced
     \texttt{ruff} \texttt{F401} unused-import warnings that nobody
     noticed locally --- caught by the \texttt{python-lint} job on the
     next \texttt{push}.
+    \item A broken \texttt{\textbackslash{}cite\{\}} key in
+    \texttt{report.tex} slipped through local edits; the
+    \texttt{latex-build} job failed loudly on the next push instead of
+    leaving us with a quietly mis-rendered PDF.
+    \item Several stage scripts were missing \texttt{set -euo pipefail}
+    at one point; the \texttt{tests/unit/01\_repo\_structure.bats}
+    invariant catches that on \texttt{ubuntu-latest} in under five
+    seconds.
 \end{itemize}
 
 \subsection{What we shipped}

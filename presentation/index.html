@@ -308,7 +308,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>00 &nbsp;·&nbsp; Overview <span class="dot"></span> At a glance</span><span class="right">Aposemat IoT-23 · Zeek conn logs</span></div>
-  <div class="footer"><span>IoT Malware Detection · Team 30</span><span class="pg">02 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%;">
@@ -330,47 +329,10 @@
   </div>
 </section>
 
-<!-- ============== 3. PIPELINE MAP ============== -->
-<section class="slide">
-  <div class="chrome"></div>
-  <div class="crown"><span>00 &nbsp;·&nbsp; Method <span class="dot"></span> Pipeline Map</span><span class="right">Four stages · One main.sh</span></div>
-  <div class="footer"><span>Methodology</span><span class="pg">03 / 22</span></div>
-
-  <div class="body">
-    <div style="margin-bottom:34px;">
-      <div class="stamp">Stages of work</div>
-      <h2 class="h2" style="margin-top:18px;">From CSV to dashboard, in four reproducible stages.</h2>
-    </div>
-
-    <div class="train">
-      <div class="step"><div><div class="n">Stage 01</div><div class="t" style="margin-top:10px;">Ingestion</div></div><div class="d">PostgreSQL + Sqoop import to HDFS as Parquet/Snappy.</div></div>
-      <div class="step"><div><div class="n">Stage 02</div><div class="t" style="margin-top:10px;">Storage &amp;<br/>EDA</div></div><div class="d">Hive partitioned + bucketed tables. Seven Tez/HiveQL insights.</div></div>
-      <div class="step"><div><div class="n">Stage 03</div><div class="t" style="margin-top:10px;">Predictive<br/>Analytics</div></div><div class="d">Spark ML pipeline — RF and Multinomial LR with grid-search CV.</div></div>
-      <div class="step active"><div><div class="n ink-invert">Stage 04</div><div class="t" style="margin-top:10px;">Dashboard</div></div><div class="d">Apache Superset — data characteristics, EDA insights, model results.</div></div>
-    </div>
-
-    <div class="grid col-3" style="margin-top:48px;">
-      <div>
-        <div class="small upper mono">Cluster</div>
-        <p class="body-text" style="margin-top:8px;">Innopolis Hadoop · 3 nodes · YARN · Hive + Tez · Spark on YARN.</p>
-      </div>
-      <div>
-        <div class="small upper mono">Stack</div>
-        <p class="body-text" style="margin-top:8px;">Python 3 · PySpark · Sqoop · Beeline · psycopg2 · Apache Superset.</p>
-      </div>
-      <div>
-        <div class="small upper mono">Reproducibility</div>
-        <p class="body-text" style="margin-top:8px;">Single entry point <span class="mono">main.sh</span> — every stage is idempotent and re-runnable.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============== 4. STAGE 1 DIVIDER ============== -->
+<!-- ============== 3. STAGE 1 DIVIDER ============== -->
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Ingestion</span><span class="right">Stage / 1.0</span></div>
-  <div class="footer"><span>From raw Zeek CSV to a partitioned HDFS warehouse</span><span class="pg">04 / 22</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">01</div>
     <div class="phase-name">Data Collection<br/>&amp; Ingestion.</div>
@@ -382,7 +344,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>01 &nbsp;·&nbsp; Dataset <span class="dot"></span> Aposemat IoT-23</span><span class="right">Stratosphere Lab · CTU</span></div>
-  <div class="footer"><span>Stage 01 · Data Collection &amp; Ingestion</span><span class="pg">05 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:64px;">
@@ -394,7 +355,7 @@
         <div style="margin-top:36px;">
           <div class="small upper mono">Volume &amp; shape</div>
           <ul class="list" style="margin-top:8px;">
-            <li><span class="k">Rows</span><span class="v"><span class="mono">25,011,247</span> network connections</span></li>
+            <li><span class="k">Rows</span><span class="v"><span class="mono">25,011,003</span> network connections</span></li>
             <li><span class="k">Captures</span><span class="v">12 distinct IoT-device traces</span></li>
             <li><span class="k">Features</span><span class="v">23 per-connection Zeek fields</span></li>
             <li><span class="k">Target</span><span class="v">7-way <span class="mono">label</span> (Benign + 6 attack types)</span></li>
@@ -438,7 +399,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>01 &nbsp;·&nbsp; Ingestion <span class="dot"></span> CSV → PostgreSQL → HDFS</span><span class="right">build_projectdb.py + Sqoop</span></div>
-  <div class="footer"><span>Stage 01 · Data Collection &amp; Ingestion</span><span class="pg">06 / 22</span></div>
 
   <div class="body">
     <div class="stamp">1.2 Ingest pipeline</div>
@@ -490,7 +450,6 @@
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Storage &amp; EDA</span><span class="right">Stage / 2.0</span></div>
-  <div class="footer"><span>Hive partitioning, bucketing, and seven HiveQL insights</span><span class="pg">07 / 22</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">02</div>
     <div class="phase-name">Storage<br/>&amp; EDA.</div>
@@ -502,7 +461,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; Storage <span class="dot"></span> Hive warehouse</span><span class="right">team30_projectdb</span></div>
-  <div class="footer"><span>Stage 02 · Storage &amp; Preparation</span><span class="pg">08 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:64px;">
@@ -551,7 +509,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 01 — Label distribution</span><span class="right">q1.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insight 1 of 7</span><span class="pg">09 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:56px;">
@@ -584,7 +541,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insights 02 &amp; 05 — Protocol + state</span><span class="right">q2.hql, q5.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insights 2 + 5</span><span class="pg">10 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:48px;">
@@ -628,7 +584,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insights 03 &amp; 07 — Bytes &amp; packets</span><span class="right">q3.hql, q7.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insights 3 + 7</span><span class="pg">11 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:48px;">
@@ -673,7 +628,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 04 — Per-capture maliciousness</span><span class="right">q4.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insight 4</span><span class="pg">12 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:56px;">
@@ -694,7 +648,7 @@
             <tr><td class="mono">Capture-3</td><td class="num">156,103</td><td class="num">97.1%</td></tr>
             <tr><td class="mono">Capture-1</td><td class="num">1,008,748</td><td class="num">53.5%</td></tr>
             <tr><td class="mono">Capture-44</td><td class="num">237</td><td class="num">11.0%</td></tr>
-            <tr><td class="mono">Capture-20 / 22 / 42</td><td class="num">~3,500 each</td><td class="num">&lt;1%</td></tr>
+            <tr><td class="mono">Capture-20 / 19 / 42</td><td class="num">~3,500 each</td><td class="num">&lt;1%</td></tr>
           </tbody>
         </table>
       </div>
@@ -711,7 +665,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 06 — Target ports</span><span class="right">q6.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insight 6</span><span class="pg">13 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:56px;">
@@ -749,7 +702,6 @@
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Predictive Analytics</span><span class="right">Stage / 3.0</span></div>
-  <div class="footer"><span>Spark MLlib · Random Forest vs. Logistic Regression</span><span class="pg">14 / 22</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">03</div>
     <div class="phase-name">Predictive<br/>Analytics.</div>
@@ -761,7 +713,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>03 &nbsp;·&nbsp; ML <span class="dot"></span> Spark feature pipeline</span><span class="right">PySpark · pyspark.ml.Pipeline</span></div>
-  <div class="footer"><span>Stage 03 · Feature engineering</span><span class="pg">15 / 22</span></div>
 
   <div class="body">
     <div class="stamp">3.1 Pipeline</div>
@@ -796,7 +747,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>03 &nbsp;·&nbsp; ML <span class="dot"></span> Models &amp; cross-validation</span><span class="right">CrossValidator · F1 metric</span></div>
-  <div class="footer"><span>Stage 03 · Training</span><span class="pg">16 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:64px;">
@@ -848,7 +798,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>03 &nbsp;·&nbsp; ML <span class="dot"></span> Held-out evaluation</span><span class="right">10M test rows · MulticlassClassificationEvaluator</span></div>
-  <div class="footer"><span>Stage 03 · Evaluation</span><span class="pg">17 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:64px; height:100%;">
@@ -885,69 +834,10 @@
   </div>
 </section>
 
-<!-- ============== 18. STAGE 4 DIVIDER ============== -->
-<section class="slide divider">
-  <div class="chrome"></div>
-  <div class="crown"><span>Stage <span class="dot"></span> Dashboard</span><span class="right">Stage / 4.0</span></div>
-  <div class="footer"><span>Apache Superset · the data tells its story</span><span class="pg">18 / 22</span></div>
-  <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
-    <div class="phase-num">04</div>
-    <div class="phase-name">Dashboard.</div>
-    <div class="phase-sub">A single Superset dashboard backed by the seven q*_results Hive tables and the model evaluation CSV. Public, reproducible, refresh-on-demand.</div>
-  </div>
-</section>
-
-<!-- ============== 19. STAGE 4 — DASHBOARD CONTENT ============== -->
-<section class="slide">
-  <div class="chrome"></div>
-  <div class="crown"><span>04 &nbsp;·&nbsp; Dashboard <span class="dot"></span> Story of the data</span><span class="right">Apache Superset</span></div>
-  <div class="footer"><span>Stage 04 · Presentation</span><span class="pg">19 / 22</span></div>
-
-  <div class="body">
-    <div class="grid col-2" style="gap:56px; height:100%;">
-      <div>
-        <div class="stamp">4.1 Dashboard sections</div>
-        <h2 class="h2" style="margin-top:18px;">From raw scale to model verdict, in five panels.</h2>
-        <ul class="list" style="margin-top:24px;">
-          <li><span class="k">A</span><span class="v"><strong>Data characteristics</strong> &mdash; 25M rows, 23 features, 7 classes, 12 captures.</span></li>
-          <li><span class="k">B</span><span class="v"><strong>Class balance</strong> (q1) — donut and percentage list.</span></li>
-          <li><span class="k">C</span><span class="v"><strong>Behaviour signatures</strong> (q2, q3, q5, q7) — protocol, bytes, conn_state, packets.</span></li>
-          <li><span class="k">D</span><span class="v"><strong>Top targets</strong> (q6) — port histograms per attack type.</span></li>
-          <li><span class="k">E</span><span class="v"><strong>Capture strata</strong> (q4) — bimodal maliciousness ratios.</span></li>
-          <li><span class="k">F</span><span class="v"><strong>Model performance</strong> &mdash; RF vs. LR comparison from <span class="mono">evaluation.csv</span>.</span></li>
-        </ul>
-      </div>
-
-      <div>
-        <div class="stamp">4.2 Wiring</div>
-        <h2 class="h3" style="margin-top:14px;">Backed entirely by managed Hive tables.</h2>
-        <div class="codeblock" style="margin-top:18px;">
-          <span class="c">-- Superset → Hive 2 (HiveServer2)</span><br/>
-          jdbc:hive2://hadoop-03.uni.innopolis.ru:10001<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;USE team30_projectdb;<br/>
-          <br/>
-          <span class="c">-- One dataset per chart</span><br/>
-          SELECT label, row_count, share_fraction<br/>
-          &nbsp;&nbsp;FROM q1_results;<br/>
-          <br/>
-          SELECT model, accuracy, precision, recall, f1_score<br/>
-          &nbsp;&nbsp;FROM evaluation_csv;<br/>
-        </div>
-
-        <div style="margin-top:32px; padding:22px; background:var(--ink); color:var(--paper);">
-          <div class="small upper mono" style="color:rgba(255,255,255,.6);">Reproducibility contract</div>
-          <p class="h3" style="margin-top:8px; color:var(--paper); font-weight:600;">Re-run <span class="mono">main.sh</span> on the cluster &mdash; every Hive result table and the evaluation CSV are rebuilt; the dashboard refreshes against them with no manual edits.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============== 20. CI / CD — Layer 1 (cloud) ============== -->
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>CI <span class="dot"></span> Layer 1 · Cloud (GitHub Actions)</span><span class="right">Every push, ~1m</span></div>
-  <div class="footer"><span>Three test layers, one repo</span><span class="pg">20 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:48px; height:100%;">
@@ -993,7 +883,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>CI <span class="dot"></span> Layer 2 · Cluster smoke (manual)</span><span class="right">Bats · run_tests.sh</span></div>
-  <div class="footer"><span>What CI cannot reach — and what to do about it</span><span class="pg">21 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:48px; height:100%;">
@@ -1023,7 +912,7 @@
         <div style="margin-top:18px; border:1px solid var(--ink);">
           <img src="img/ci_cluster_passed.png" alt="bats unit suite passing on the cluster" style="display:block; width:100%; height:auto;" />
         </div>
-        <p class="small" style="margin-top:8px;">Direct run from <span class="mono">team30@hadoop-01</span>: file-layout invariants, every stage uses <span class="mono">set -euo pipefail</span>, <span class="mono">evaluation.csv</span> schema, RF F1&nbsp;regression guard, and the three <span class="mono">report.tex</span> regression checks (no Citus, raw CSV size pinned at 3.39&nbsp;GB, new repo URL).</p>
+        <p class="small" style="margin-top:8px;">Direct run from <span class="mono">team30@hadoop-01</span>: file-layout invariants, every stage uses <span class="mono">set -euo pipefail</span>, the seven HQL queries are present, <span class="mono">evaluation.csv</span> schema is intact, and RF F1 stays at 0.99+.</p>
 
         <div style="margin-top:18px; padding:14px 18px; border:1px solid var(--ink);">
           <p class="body-text"><strong>Same runner, two destinations.</strong> Tests gated by <span class="mono">require_cmd</span> / <span class="mono">require_secret</span> — on the cluster they validate the live warehouse, on a laptop the cluster tests just <em>skip</em>.</p>
@@ -1037,7 +926,6 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>End <span class="dot"></span> Conclusions &amp; reflections</span><span class="right">Final read</span></div>
-  <div class="footer"><span>Conclusion</span><span class="pg">22 / 22</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:64px; height:100%;">
@@ -1067,8 +955,8 @@
         </div>
 
         <div style="margin-top:30px; padding:22px; background:var(--ink); color:var(--paper);">
-          <div class="small upper mono" style="color:rgba(255,255,255,.6);">Final position</div>
-          <p class="h3" style="margin-top:8px; color:var(--paper); font-weight:600;">Big-data tools were the right hammer here — Hive partitioning + Spark CV made the 25M-row, 7-class job tractable on a 3-node cluster.</p>
+          <div class="small upper mono" style="color:rgba(255,255,255,.6);">Reproducibility contract</div>
+          <p class="h3" style="margin-top:8px; color:var(--paper); font-weight:600;">Re-run <span class="mono">main.sh</span> on the cluster &mdash; every Hive result table and the evaluation CSV are rebuilt; the public Superset dashboard refreshes against them with no manual edits.</p>
         </div>
       </div>
     </div>

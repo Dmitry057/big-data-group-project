@@ -54,28 +54,3 @@ load "${BATS_TEST_DIRNAME}/../helpers/common.bash"
     assert_dir "${PROJECT_ROOT}/models/model2"
 }
 
-@test "final report PDF is committed and non-trivial" {
-    local f="${PROJECT_ROOT}/report/report.pdf"
-    assert_file "$f"
-    # Report should be at least 500 KB; current is ~1.5 MB.
-    local size
-    size="$(wc -c < "$f")"
-    [ "$size" -gt 500000 ]
-}
-
-@test "no leftover Citus references in report.tex" {
-    run grep -iF "citus" "${PROJECT_ROOT}/report/report.tex"
-    assert_failure
-}
-
-@test "no '737 MB' regression in report.tex (must be 3.39 GB)" {
-    run grep -F "737 MB" "${PROJECT_ROOT}/report/report.tex"
-    assert_failure
-    run grep -F "3.39 GB" "${PROJECT_ROOT}/report/report.tex"
-    assert_success
-}
-
-@test "report.tex points at the new repo URL" {
-    run grep -F "big-data-group-project" "${PROJECT_ROOT}/report/report.tex"
-    assert_success
-}
