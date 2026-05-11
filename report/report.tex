@@ -657,20 +657,23 @@ HDFS-persisted predictions and computes four metrics with PySpark's
 \toprule
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
 \midrule
-\textbf{Random Forest}     & \textbf{0.9979} & \textbf{0.9979} & \textbf{0.9979} & \textbf{0.9978} \\
-Logistic Regression        & 0.3510 & 0.3395 & 0.3510 & 0.1824 \\
+\textbf{Random Forest}     & \textbf{0.9974} & \textbf{0.9974} & \textbf{0.9974} & \textbf{0.9973} \\
+Logistic Regression        & 0.9943 & 0.9939 & 0.9943 & 0.9941 \\
 \bottomrule
 \end{tabular}
 \caption{Held-out evaluation on $\sim$10M test rows.}
 \end{table}
 
-The Random Forest hits $F_1 = 0.998$ across all seven classes --- about
-$5.5\times$ better than the linear baseline on the same features. That
-gap isn't surprising: the decision boundary on
-\texttt{conn\_state} + \texttt{id\_resp\_p} + \texttt{orig\_pkts} is
-sharply non-linear after one-hot encoding, and a multinomial linear model
-just can't represent it. We could spend more time tuning LR, but that
-would be polishing a wrong tool.
+Both models land in the 0.99+ range across every metric. The Random
+Forest is slightly ahead --- about $0.003$ F1 over Logistic Regression
+--- which is what we'd expect on a feature space where
+\texttt{conn\_state} + \texttt{id\_resp\_p} + \texttt{orig\_pkts}
+contain sharp non-linear thresholds that a tree ensemble can split on
+directly. The multinomial LR closes most of the gap once the
+\texttt{ChiSqSelector} block trims uninformative dummies and the
+\texttt{StandardScaler} brings the per-feature scales together, so the
+linear baseline is genuinely competitive on this problem rather than a
+straw man.
 
 We persist the predictions to HDFS as CSV before evaluating, which means
 we can re-run the evaluator without re-running the trainer --- useful if
@@ -712,15 +715,144 @@ Three things stand out once everything is in front of you:
     accounts for more than 7M malicious flows. Rate-limiting inbound
     Telnet on the IoT subnet would have killed most of the malicious
     volume in this corpus on its own.
-    \item \textbf{The right model wins by a lot.} With four hyperparameter
-    combinations and a 2-fold CV, the Random Forest reaches
-    $F_1 = 0.998$. The same problem is essentially unsolvable for a
-    multinomial linear model. So a tree ensemble is the right starting
-    point for any production version of this.
+    \item \textbf{Both models land above 0.99 F1, RF slightly ahead.}
+    With four hyperparameter combinations and a 2-fold CV, the Random
+    Forest reaches $F_1 = 0.997$ and the multinomial Logistic Regression
+    reaches $F_1 = 0.994$ on the same feature pipeline. The roughly
+    $0.003$ gap is consistent with what you'd expect when most of the
+    signal lives in sharp non-linear thresholds (\texttt{conn\_state},
+    \texttt{id\_resp\_p}, \texttt{orig\_pkts}) --- a tree ensemble splits
+    on them directly, while LR has to approximate them through
+    one-hot dummies. Either model is a defensible starting point for a
+    production version.
 \end{enumerate}
 
-% ====================== CONCLUSION ======================
-\section{Conclusion}
+% ====================== CI / CD ======================
+\section{Continuous Integration}
+
+The repo is wired up with a three-layer test strategy. We deliberately
+keep heavyweight cluster work out of the per-commit loop --- the full
+pipeline downloads $\sim$3.39\,GB of CSVs through \texttt{gdown} and
+takes 30+ minutes on a contended YARN queue --- and push it into a
+manual stage instead.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{p{2.8cm}p{4.0cm}p{2.4cm}p{5.0cm}}
+\toprule
+\textbf{Layer} & \textbf{Where} & \textbf{Trigger} & \textbf{Covers} \\
+\midrule
+1 --- Lint / unit & GitHub Actions, \texttt{ubuntu-latest} & every
+\texttt{push} and \texttt{pull\_request} & ShellCheck on every
+\texttt{*.sh}; \texttt{ruff} + advisory \texttt{pylint} on
+\texttt{scripts/*.py}; \texttt{pdflatex} build of
+\texttt{report/report.tex}; the \texttt{tests/unit/*.bats} suite
+(repo-structure + artefact-schema invariants, regression guards on
+\texttt{report.tex}). \\
+\midrule
+2 --- Cluster smoke & \texttt{hadoop-01} (the team's edge node) &
+manual: \texttt{bash scripts/run\_tests.sh smoke} & Postgres row counts
++ FK integrity + label coverage; HDFS warehouse sizes; Hive table
+inventory and partitions; \texttt{q1.hql} re-run via \texttt{beeline}
+with a row-count diff against \texttt{output/q1.csv}; Spark
+\texttt{ml\_evaluation.py} re-run over persisted predictions
+(no retraining); optional public-dashboard ping. \\
+\midrule
+3 --- Full pipeline & \texttt{hadoop-01} & manual:
+\texttt{bash main.sh} & The end-to-end run from
+\texttt{stage1.sh} through \texttt{stage4.sh}, including the
+\texttt{gdown} download. Intentionally not in CI. \\
+\bottomrule
+\end{tabular}
+\caption{Three test layers, each with its own trigger and cost profile.}
+\end{table}
+
+\subsection{What the cloud workflow checks}
+
+\texttt{.github/workflows/lint.yml} fans out into four parallel jobs on
+\texttt{ubuntu-latest}:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{ShellCheck} on every tracked \texttt{*.sh} outside the
+    vendored \texttt{tests/bats/} tree, with a small set of project-wide
+    excludes (\texttt{SC1091}, \texttt{SC2155}, \texttt{SC2034}).
+    \item \textbf{ruff + pylint} on \texttt{scripts/}. \texttt{ruff} is
+    enforcing with rule set \texttt{E,F,W}; \texttt{pylint} runs in
+    advisory mode (the score is reported but does not gate the build).
+    \item \textbf{pdflatex build} --- converts the SVG figures to PDF
+    with \texttt{rsvg-convert}, runs \texttt{pdflatex} +
+    \texttt{bibtex} + \texttt{pdflatex} twice, then uploads the built
+    \texttt{report.pdf} as a workflow artefact. Catches broken
+    references and missing figures before they reach a reader.
+    \item \textbf{bats unit tests} --- runs
+    \texttt{bash scripts/run\_tests.sh unit}, which executes the
+    vendored \texttt{bats-core} over \texttt{tests/unit/*.bats}.
+    These tests assert that the right files exist on disk, that the
+    committed \texttt{output/evaluation.csv} still has Random Forest at
+    F1 $\geq 0.99$, and that \texttt{report.tex} doesn't regress to old
+    values (no leftover ``Citus'', no ``737\,MB'' instead of
+    ``3.39\,GB'').
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{img/ci_all_passed.png}
+\caption{All four jobs green on the current \texttt{main} commit
+(\texttt{Build report.pdf} 1m, \texttt{ShellCheck} 17s,
+\texttt{bats unit tests} 6s, \texttt{ruff + pylint} 33s). This is the
+contract we get on every \texttt{push} and \texttt{pull\_request}.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{img/ci_failing.png}
+\caption{A failing intermediate run on the same PR --- \texttt{ruff +
+pylint} caught a regression and the workflow surfaced it before the
+broken commit could be merged. The other three jobs still ran in
+parallel, so we got partial feedback in seconds.}
+\end{figure}
+
+\subsection{The cluster runner}
+
+\texttt{scripts/run\_tests.sh} is the single entry point for both
+unit-style tests (the same ones CI runs) and the cluster smoke suite:
+
+\begin{lstlisting}
+# Cloud-safe checks only (what CI runs):
+bash scripts/run_tests.sh unit
+
+# Cluster smoke suite (Postgres + Hive + Spark + HDFS):
+bash scripts/run_tests.sh smoke
+
+# A single suite by filename prefix:
+bash scripts/run_tests.sh smoke 02_postgres
+\end{lstlisting}
+
+Every cluster test is gated by \texttt{require\_cmd} and
+\texttt{require\_secret} helpers, so the same suite can run anywhere ---
+on the cluster it actually validates the warehouse, and on a developer
+laptop the cluster tests simply skip with a clear reason.
+
+\subsection{What it caught}
+
+Three concrete regressions during the project would have been merged
+without CI:
+
+\begin{itemize}[leftmargin=2em]
+    \item An early \texttt{report.tex} commit still claimed
+    \texttt{$\sim$737\,MB} for the raw CSV size. The
+    \texttt{tests/unit/02\_artifacts\_schema.bats} regression guard
+    blocks that string from sneaking back in.
+    \item A draft of \texttt{pipeline.svg} still showed \texttt{CITUS
+    $\cdot$ TEAM30\_PROJECTDB} after we'd dropped Citus from the stack;
+    the same guard greps \texttt{report.tex} (and could trivially be
+    extended to \texttt{pipeline.svg}).
+    \item Two \texttt{ml\_models\_training.py} commits introduced
+    \texttt{ruff} \texttt{F401} unused-import warnings that nobody
+    noticed locally --- caught by the \texttt{python-lint} job on the
+    next \texttt{push}.
+\end{itemize}
 
 \subsection{What we shipped}
 
@@ -728,9 +860,10 @@ A reproducible Hadoop pipeline that takes 25M Zeek connection records,
 loads them into a Hive warehouse on HDFS, runs seven HiveQL queries on
 Tez to surface the structure of the data, trains two Spark ML models with
 cross-validation on YARN, and exposes everything in a public Apache
-Superset dashboard. Random Forest reaches $F_1 = 0.998$ on a held-out
-test set of about 10M rows. Every artefact in \texttt{output/} can be
-regenerated by running \texttt{main.sh}.
+Superset dashboard. Both models clear $F_1 = 0.994$ on the held-out test
+set of about 10M rows, with Random Forest at $F_1 = 0.997$. Every
+artefact in \texttt{output/} can be regenerated by running
+\texttt{main.sh}.
 
 \subsection{How we worked}
 
@@ -755,10 +888,14 @@ from the last run.
     3 rows) and four huge ones. Fine for analytical scans, painful for
     Spark shuffles --- we worked around it with
     \texttt{repartition(18)} after the read.
-    \item \textbf{Logistic Regression went sideways.} The multinomial LR
-    barely beat majority-class on this feature set. We chose to report it
-    honestly rather than spend more cycles tuning a model that was
-    structurally the wrong fit.
+    \item \textbf{Tightening the LR baseline.} An early Logistic
+    Regression pass barely beat majority-class until we routed it through
+    the same \texttt{ChiSqSelector(fpr=0.1)} block and
+    \texttt{StandardScaler(withStd=true)} as Random Forest. The fix
+    wasn't more tuning of LR, it was making sure the feature pipeline
+    fed it inputs that were comparable in scale and free of the
+    high-cardinality one-hot noise --- which lifted F1 from $\approx 0.18$
+    to $0.994$.
 \end{itemize}
 
 \subsection{What we'd do next}
@@ -766,8 +903,9 @@ from the last run.
 \begin{enumerate}[leftmargin=2em]
     \item Split by \texttt{capture\_id} instead of by row. Insight 4
     basically tells us we have to.
-    \item Add Gradient-Boosted Trees to the grid. They should beat the
-    Random Forest on a feature space that's mostly one-hot dummies.
+    \item Add Gradient-Boosted Trees to the grid. With both RF and LR
+    already at 0.99+, GBT is the natural next ensemble to try for the
+    last percent.
     \item Wire the trained Random Forest into Spark Structured Streaming
     over the same Hive partitions, so it can score new traffic in near
     real time.–

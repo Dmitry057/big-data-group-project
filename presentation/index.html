@@ -308,7 +308,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>00 &nbsp;·&nbsp; Overview <span class="dot"></span> At a glance</span><span class="right">Aposemat IoT-23 · Zeek conn logs</span></div>
-  <div class="footer"><span>IoT Malware Detection · Team 30</span><span class="pg">02 / 19</span></div>
+  <div class="footer"><span>IoT Malware Detection · Team 30</span><span class="pg">02 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%;">
@@ -324,7 +324,7 @@
         <div class="stat"><div class="num">25.0M</div><div class="lab">Network connections</div></div>
         <div class="stat"><div class="num">12</div><div class="lab">IoT capture sources</div></div>
         <div class="stat"><div class="num">7</div><div class="lab">Malware behaviour classes</div></div>
-        <div class="stat"><div class="num">0.998</div><div class="lab">Random Forest · F1</div></div>
+        <div class="stat"><div class="num">0.997</div><div class="lab">Random Forest · F1</div></div>
       </div>
     </div>
   </div>
@@ -334,7 +334,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>00 &nbsp;·&nbsp; Method <span class="dot"></span> Pipeline Map</span><span class="right">Four stages · One main.sh</span></div>
-  <div class="footer"><span>Methodology</span><span class="pg">03 / 19</span></div>
+  <div class="footer"><span>Methodology</span><span class="pg">03 / 21</span></div>
 
   <div class="body">
     <div style="margin-bottom:34px;">
@@ -370,7 +370,7 @@
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Ingestion</span><span class="right">Stage / 1.0</span></div>
-  <div class="footer"><span>From raw Zeek CSV to a partitioned HDFS warehouse</span><span class="pg">04 / 19</span></div>
+  <div class="footer"><span>From raw Zeek CSV to a partitioned HDFS warehouse</span><span class="pg">04 / 21</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">01</div>
     <div class="phase-name">Data Collection<br/>&amp; Ingestion.</div>
@@ -382,7 +382,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>01 &nbsp;·&nbsp; Dataset <span class="dot"></span> Aposemat IoT-23</span><span class="right">Stratosphere Lab · CTU</span></div>
-  <div class="footer"><span>Stage 01 · Data Collection &amp; Ingestion</span><span class="pg">05 / 19</span></div>
+  <div class="footer"><span>Stage 01 · Data Collection &amp; Ingestion</span><span class="pg">05 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:64px;">
@@ -438,7 +438,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>01 &nbsp;·&nbsp; Ingestion <span class="dot"></span> CSV → PostgreSQL → HDFS</span><span class="right">build_projectdb.py + Sqoop</span></div>
-  <div class="footer"><span>Stage 01 · Data Collection &amp; Ingestion</span><span class="pg">06 / 19</span></div>
+  <div class="footer"><span>Stage 01 · Data Collection &amp; Ingestion</span><span class="pg">06 / 21</span></div>
 
   <div class="body">
     <div class="stamp">1.2 Ingest pipeline</div>
@@ -490,7 +490,7 @@
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Storage &amp; EDA</span><span class="right">Stage / 2.0</span></div>
-  <div class="footer"><span>Hive partitioning, bucketing, and seven HiveQL insights</span><span class="pg">07 / 19</span></div>
+  <div class="footer"><span>Hive partitioning, bucketing, and seven HiveQL insights</span><span class="pg">07 / 21</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">02</div>
     <div class="phase-name">Storage<br/>&amp; EDA.</div>
@@ -502,7 +502,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; Storage <span class="dot"></span> Hive warehouse</span><span class="right">team30_projectdb</span></div>
-  <div class="footer"><span>Stage 02 · Storage &amp; Preparation</span><span class="pg">08 / 19</span></div>
+  <div class="footer"><span>Stage 02 · Storage &amp; Preparation</span><span class="pg">08 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:64px;">
@@ -551,7 +551,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 01 — Label distribution</span><span class="right">q1.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insight 1 of 7</span><span class="pg">09 / 19</span></div>
+  <div class="footer"><span>Stage 02 · Insight 1 of 7</span><span class="pg">09 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:56px;">
@@ -584,7 +584,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insights 02 &amp; 05 — Protocol + state</span><span class="right">q2.hql, q5.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insights 2 + 5</span><span class="pg">10 / 19</span></div>
+  <div class="footer"><span>Stage 02 · Insights 2 + 5</span><span class="pg">10 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:48px;">
@@ -628,7 +628,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insights 03 &amp; 07 — Bytes &amp; packets</span><span class="right">q3.hql, q7.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insights 3 + 7</span><span class="pg">11 / 19</span></div>
+  <div class="footer"><span>Stage 02 · Insights 3 + 7</span><span class="pg">11 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:48px;">
@@ -673,7 +673,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 04 — Per-capture maliciousness</span><span class="right">q4.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insight 4</span><span class="pg">12 / 19</span></div>
+  <div class="footer"><span>Stage 02 · Insight 4</span><span class="pg">12 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:56px;">
@@ -711,7 +711,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 06 — Target ports</span><span class="right">q6.hql</span></div>
-  <div class="footer"><span>Stage 02 · Insight 6</span><span class="pg">13 / 19</span></div>
+  <div class="footer"><span>Stage 02 · Insight 6</span><span class="pg">13 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:56px;">
@@ -749,7 +749,7 @@
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Predictive Analytics</span><span class="right">Stage / 3.0</span></div>
-  <div class="footer"><span>Spark MLlib · Random Forest vs. Logistic Regression</span><span class="pg">14 / 19</span></div>
+  <div class="footer"><span>Spark MLlib · Random Forest vs. Logistic Regression</span><span class="pg">14 / 21</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">03</div>
     <div class="phase-name">Predictive<br/>Analytics.</div>
@@ -761,7 +761,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>03 &nbsp;·&nbsp; ML <span class="dot"></span> Spark feature pipeline</span><span class="right">PySpark · pyspark.ml.Pipeline</span></div>
-  <div class="footer"><span>Stage 03 · Feature engineering</span><span class="pg">15 / 19</span></div>
+  <div class="footer"><span>Stage 03 · Feature engineering</span><span class="pg">15 / 21</span></div>
 
   <div class="body">
     <div class="stamp">3.1 Pipeline</div>
@@ -796,7 +796,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>03 &nbsp;·&nbsp; ML <span class="dot"></span> Models &amp; cross-validation</span><span class="right">CrossValidator · F1 metric</span></div>
-  <div class="footer"><span>Stage 03 · Training</span><span class="pg">16 / 19</span></div>
+  <div class="footer"><span>Stage 03 · Training</span><span class="pg">16 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="height:100%; gap:64px;">
@@ -848,20 +848,20 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>03 &nbsp;·&nbsp; ML <span class="dot"></span> Held-out evaluation</span><span class="right">10M test rows · MulticlassClassificationEvaluator</span></div>
-  <div class="footer"><span>Stage 03 · Evaluation</span><span class="pg">17 / 19</span></div>
+  <div class="footer"><span>Stage 03 · Evaluation</span><span class="pg">17 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:64px; height:100%;">
       <div>
         <div class="stamp">3.5 Comparison</div>
-        <h2 class="h2" style="margin-top:18px;">Random Forest dominates on every metric.</h2>
-        <p class="lead" style="margin-top:18px;">Bagging captures non-linear thresholds in <span class="mono">orig_pkts</span>, <span class="mono">id_resp_p</span> and <span class="mono">conn_state</span> &mdash; signals the multinomial linear model cannot fit at this granularity.</p>
+        <h2 class="h2" style="margin-top:18px;">Both models clear F1 = 0.99 — Random Forest slightly ahead.</h2>
+        <p class="lead" style="margin-top:18px;">After <span class="mono">ChiSqSelector</span> trims uninformative dummies and <span class="mono">StandardScaler</span> harmonises feature scales, the multinomial linear baseline is genuinely competitive on this problem.</p>
 
         <table class="tbl" style="margin-top:32px;">
           <thead><tr><th>Model</th><th class="num">Accuracy</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th></tr></thead>
           <tbody>
-            <tr class="hl"><td>Random Forest</td><td class="num">0.9979</td><td class="num">0.9979</td><td class="num">0.9979</td><td class="num">0.9978</td></tr>
-            <tr><td>Logistic Regression</td><td class="num">0.3510</td><td class="num">0.3395</td><td class="num">0.3510</td><td class="num">0.1824</td></tr>
+            <tr class="hl"><td>Random Forest</td><td class="num">0.9974</td><td class="num">0.9974</td><td class="num">0.9974</td><td class="num">0.9973</td></tr>
+            <tr><td>Logistic Regression</td><td class="num">0.9943</td><td class="num">0.9939</td><td class="num">0.9943</td><td class="num">0.9941</td></tr>
           </tbody>
         </table>
         <p class="small" style="margin-top:14px;">Metrics computed via PySpark <span class="mono">MulticlassClassificationEvaluator</span>; F1 weighted by class support.</p>
@@ -871,12 +871,12 @@
         <div class="stamp">3.5 Visual ranking</div>
         <h2 class="h3" style="margin-top:14px;">Bars scaled by F1 score.</h2>
         <div style="margin-top:32px;">
-          <div class="bar-row"><div class="name">Random Forest</div><div class="bar"><i style="width:99.8%"></i></div><div class="val">0.9978</div></div>
-          <div class="bar-row"><div class="name">Logistic Regression</div><div class="bar"><i style="width:18.2%"></i></div><div class="val">0.1824</div></div>
+          <div class="bar-row"><div class="name">Random Forest</div><div class="bar"><i style="width:99.7%"></i></div><div class="val">0.9973</div></div>
+          <div class="bar-row"><div class="name">Logistic Regression</div><div class="bar"><i style="width:99.4%"></i></div><div class="val">0.9941</div></div>
         </div>
 
         <div style="margin-top:42px; padding:20px 22px; border:1px solid var(--ink);">
-          <p class="pull" style="font-size:30px;">RF reaches <em>F1 = 0.998</em> on a 7-class, 25M-row problem — a <em>5.5×</em> lift over a linear baseline at the same feature set.</p>
+          <p class="pull" style="font-size:30px;">RF reaches <em>F1 = 0.997</em> on a 7-class, 25M-row problem; LR sits 0.003 behind at <em>0.994</em> — a strong baseline rather than a straw man.</p>
         </div>
 
         <p class="small" style="margin-top:18px;">Predictions persisted to HDFS as CSV (<span class="mono">project/output/modelN_predictions/</span>) and replayed by <span class="mono">ml_evaluation.py</span> &mdash; evaluator is decoupled from training.</p>
@@ -889,7 +889,7 @@
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Dashboard</span><span class="right">Stage / 4.0</span></div>
-  <div class="footer"><span>Apache Superset · the data tells its story</span><span class="pg">18 / 19</span></div>
+  <div class="footer"><span>Apache Superset · the data tells its story</span><span class="pg">18 / 21</span></div>
   <div class="body" style="display:flex; flex-direction:column; justify-content:flex-end;">
     <div class="phase-num">04</div>
     <div class="phase-name">Dashboard.</div>
@@ -901,7 +901,7 @@
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>04 &nbsp;·&nbsp; Dashboard <span class="dot"></span> Story of the data</span><span class="right">Apache Superset</span></div>
-  <div class="footer"><span>Stage 04 · Presentation</span><span class="pg">19 / 19</span></div>
+  <div class="footer"><span>Stage 04 · Presentation</span><span class="pg">19 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:56px; height:100%;">
@@ -943,11 +943,57 @@
   </div>
 </section>
 
-<!-- ============== 20. CLOSING ============== -->
+<!-- ============== 20. CI / CD ============== -->
+<section class="slide">
+  <div class="chrome"></div>
+  <div class="crown"><span>CI <span class="dot"></span> Continuous integration</span><span class="right">GitHub Actions · Bats</span></div>
+  <div class="footer"><span>Three test layers, one repo</span><span class="pg">20 / 21</span></div>
+
+  <div class="body">
+    <div class="grid col-2" style="gap:48px; height:100%;">
+      <div>
+        <div class="stamp">CI · Three layers</div>
+        <h2 class="h2" style="margin-top:18px; max-width:560px;">Heavy work stays manual; the per-commit loop stays fast.</h2>
+        <p class="lead" style="margin-top:14px;">The full pipeline downloads ~3.39&nbsp;GB and competes for YARN — never on a push. CI runs only what's safe and quick.</p>
+
+        <table class="tbl" style="margin-top:28px;">
+          <thead><tr><th>Layer</th><th>Trigger</th><th>What</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td>1 · Lint / unit</td><td><span class="mono">push</span> / <span class="mono">PR</span></td><td>ShellCheck, ruff + pylint, <span class="mono">pdflatex</span>, bats unit</td></tr>
+            <tr><td>2 · Cluster smoke</td><td>manual</td><td>Postgres, HDFS, Hive, Spark eval re-run</td></tr>
+            <tr><td>3 · Full pipeline</td><td>manual</td><td><span class="mono">bash main.sh</span> end-to-end</td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:24px; padding:18px 20px; background:var(--ink); color:var(--paper);">
+          <div class="small upper mono" style="color:rgba(255,255,255,.6);">Layer 2 — cluster runner</div>
+          <p class="mono" style="margin-top:8px; color:var(--paper); font-size:18px;">bash scripts/run_tests.sh smoke 02_postgres</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="stamp">CI · Live status</div>
+        <h2 class="h3" style="margin-top:14px;">Four jobs in parallel, ~1m wall-time.</h2>
+
+        <div style="margin-top:18px; border:1px solid var(--ink);">
+          <img src="img/ci_all_passed.png" alt="All four CI jobs passing" style="display:block; width:100%; height:auto;" />
+        </div>
+        <p class="small" style="margin-top:8px;">Green: <span class="mono">ShellCheck</span> · <span class="mono">ruff + pylint</span> · <span class="mono">bats unit</span> · <span class="mono">Build report.pdf</span>.</p>
+
+        <div style="margin-top:18px; border:1px solid var(--ink);">
+          <img src="img/ci_failing.png" alt="A failing intermediate CI run" style="display:block; width:100%; height:auto;" />
+        </div>
+        <p class="small" style="margin-top:8px;">Earlier run on the same PR — <span class="mono">ruff + pylint</span> caught a regression in seconds, the other three jobs surfaced partial feedback in parallel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 21. CLOSING ============== -->
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>End <span class="dot"></span> Conclusions &amp; reflections</span><span class="right">Final read</span></div>
-  <div class="footer"><span>Conclusion</span><span class="pg">20 / 20</span></div>
+  <div class="footer"><span>Conclusion</span><span class="pg">21 / 21</span></div>
 
   <div class="body">
     <div class="grid col-2" style="gap:64px; height:100%;">
@@ -957,7 +1003,7 @@
         <ul class="list" style="margin-top:24px;">
           <li><span class="k">SCALE</span><span class="v">25M Zeek rows ingested to Hive in &lt; 20 s with Parquet/Snappy.</span></li>
           <li><span class="k">SIGNAL</span><span class="v">7 EDA insights expose class skew, port-23 dominance, S0-flood signature.</span></li>
-          <li><span class="k">MODEL</span><span class="v">Random Forest hits F1 = 0.998 across 7 classes.</span></li>
+          <li><span class="k">MODEL</span><span class="v">Both RF and LR clear F1 = 0.99 across 7 classes; RF leads by ~0.003.</span></li>
           <li><span class="k">SHIP</span><span class="v">Single <span class="mono">main.sh</span> entry point + public Superset dashboard.</span></li>
         </ul>
       </div>
@@ -968,7 +1014,7 @@
 
         <div style="margin-top:18px;">
           <div class="small upper mono">Lessons</div>
-          <p class="body-text" style="margin-top:6px;">Capture-level bimodality (q4) is a real risk for row-level random splits — group-aware splitting per <span class="mono">capture_id</span> is the right next iteration. Logistic Regression underperformed because the decision boundary on <span class="mono">conn_state</span> + <span class="mono">id_resp_p</span> is sharply non-linear after one-hot.</p>
+          <p class="body-text" style="margin-top:6px;">Capture-level bimodality (q4) is a real risk for row-level random splits — group-aware splitting per <span class="mono">capture_id</span> is the right next iteration. RF leads LR by only ~0.003 F1, so the next ensemble worth trying is Gradient-Boosted Trees rather than more tuning of either head.</p>
         </div>
 
         <div style="margin-top:22px;">
