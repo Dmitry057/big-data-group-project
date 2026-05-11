@@ -53,18 +53,18 @@
     opacity:.6;
   }
 
-  /* Frame chrome */
+  /* Frame chrome — keep only the top frame line + the top hair under the crown.
+     The bottom rules used to anchor the now-removed footer; without it
+     they read as orphan strips, so we drop them. */
   .chrome{
     position:absolute; inset:48px;
     border-top:var(--hair) solid var(--ink);
-    border-bottom:var(--hair) solid var(--ink);
     pointer-events:none;
   }
-  .chrome::before, .chrome::after{
+  .chrome::before{
     content:""; position:absolute; left:0; right:0; height:var(--hair); background:var(--ink);
+    top:34px;
   }
-  .chrome::before{ top:34px; }
-  .chrome::after{ bottom:34px; opacity:.3; }
 
   .crown{
     position:absolute; top:60px; left:64px; right:64px;
