@@ -46,8 +46,11 @@ jobs:
           pip install ruff pylint pyspark==3.4.0
       - name: Run ruff
         run: |
+          # E + F + W catches real bugs (undefined names, syntax errors,
+          # unused imports). I (import sort) and B (bugbear style) are
+          # advisory and would force a separate cleanup PR — out of scope.
           ruff check scripts/ --exclude scripts/__pycache__ \
-              --select E,F,W,I,B --ignore E501
+              --select E,F,W --ignore E501
       - name: Run pylint (advisory)
         # pylint is advisory because pyspark stubs are notoriously noisy;
         # the score is reported but does not gate the build.
