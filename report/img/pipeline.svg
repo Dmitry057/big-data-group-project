@@ -124,5 +124,5 @@
   <!-- Footer note -->
   <line x1="60" y1="685" x2="1140" y2="685" stroke="#0a0a0a" stroke-width="1" opacity="0.3"/>
   <text x="60" y="705" class="meta">Single entry point · main.sh · every stage idempotent</text>
-  <text x="1140" y="705" class="meta" text-anchor="end">Hadoop · 3 nodes · YARN · Innopolis cluster</text>
+  <text x="1140" y="705" class="meta" text-anchor="end">Hadoop · 3 nodes · YARN cluster</text>
 </svg>
