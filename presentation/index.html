@@ -907,12 +907,12 @@
 
       <div>
         <div class="stamp">Cluster · run output</div>
-        <h2 class="h3" style="margin-top:14px;">19 / 19 unit tests green on <span class="mono">hadoop-01</span>.</h2>
+        <h2 class="h3" style="margin-top:14px;">15 unit + 13 smoke green; 7 correct <span class="mono">skip</span>s.</h2>
 
         <div style="margin-top:18px; border:1px solid var(--ink);">
-          <img src="img/ci_cluster_passed.png" alt="bats unit suite passing on the cluster" style="display:block; width:100%; height:auto;" />
+          <img src="img/ci_cluster_passed.png" alt="full bats suite on the cluster: 15 unit + 20 smoke" style="display:block; width:100%; height:auto;" />
         </div>
-        <p class="small" style="margin-top:8px;">Direct run from <span class="mono">team30@hadoop-01</span>: file-layout invariants, every stage uses <span class="mono">set -euo pipefail</span>, the seven HQL queries are present, <span class="mono">evaluation.csv</span> schema is intact, and RF F1 stays at 0.99+.</p>
+        <p class="small" style="margin-top:8px;"><span class="mono">bash scripts/run_tests.sh</span> from <span class="mono">team30@hadoop-01</span>: HDFS warehouse + Hive inventory + <span class="mono">q1_results</span> row-count diff + Spark <span class="mono">ml_evaluation.py</span> re-run. The 7 skips are correct <span class="mono">require_cmd</span> behaviour — <span class="mono">psql</span> is absent on the edge node, <span class="mono">DASHBOARD_URL</span> unset for this run.</p>
 
         <div style="margin-top:18px; padding:14px 18px; border:1px solid var(--ink);">
           <p class="body-text"><strong>Same runner, two destinations.</strong> Tests gated by <span class="mono">require_cmd</span> / <span class="mono">require_secret</span> — on the cluster they validate the live warehouse, on a laptop the cluster tests just <em>skip</em>.</p>

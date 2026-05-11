@@ -834,11 +834,16 @@ laptop the cluster tests simply skip with a clear reason.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{img/ci_cluster_passed.png}
-\caption{Layer 2 in action --- \texttt{bash scripts/run\_tests.sh unit}
-on the cluster from \texttt{team30@hadoop-01}. All 19 unit tests pass:
-file-layout invariants, every stage script using \texttt{set -euo
-pipefail}, the seven HQL queries present, the \texttt{evaluation.csv}
-schema check, and the Random-Forest F1 regression guard.}
+\caption{Layer 2 in action --- \texttt{bash scripts/run\_tests.sh} on
+the cluster from \texttt{team30@hadoop-01}. The 15 cloud-safe unit
+tests pass, and 13 of the 20 cluster smoke tests run green; the 7
+\texttt{skip} lines are correct \texttt{require\_cmd}/
+\texttt{require\_secret} behaviour --- \texttt{psql} is not installed
+on the edge node and \texttt{DASHBOARD\_URL} is unset for this run.
+The smoke suite covers HDFS warehouse, Hive table inventory + partition
+layout, the \texttt{q1\_results} row-count check against the committed
+\texttt{output/q1.csv}, and the Spark \texttt{ml\_evaluation.py} re-run
+on persisted predictions.}
 \end{figure}
 
 \subsection{What it caught}
