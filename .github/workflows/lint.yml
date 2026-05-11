@@ -27,7 +27,10 @@ jobs:
           echo "Checking: ${files[*]}"
           # SC1091: don't try to resolve sourced files (.venv/.../activate etc.).
           # SC2155: declare-and-assign style is common in our wrappers.
-          shellcheck --severity=warning --exclude=SC1091,SC2155 "${files[@]}"
+          # SC2034: unused vars in benchmark scripts (intentional, configurable knobs).
+          shellcheck --severity=warning \
+              --exclude=SC1091,SC2155,SC2034 \
+              "${files[@]}"
 
   python-lint:
     name: ruff + pylint (*.py)

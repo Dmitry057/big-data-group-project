@@ -47,9 +47,9 @@ esac
 
 # ANSI colours (skip if not a TTY).
 if [ -t 1 ]; then
-    BOLD=$'\e[1m'; DIM=$'\e[2m'; GREEN=$'\e[32m'; RED=$'\e[31m'; YELLOW=$'\e[33m'; RESET=$'\e[0m'
+    BOLD=$'\e[1m'; GREEN=$'\e[32m'; RED=$'\e[31m'; YELLOW=$'\e[33m'; RESET=$'\e[0m'
 else
-    BOLD=""; DIM=""; GREEN=""; RED=""; YELLOW=""; RESET=""
+    BOLD=""; GREEN=""; RED=""; YELLOW=""; RESET=""
 fi
 
 header() {
