@@ -791,8 +791,8 @@ with a row-count diff against \texttt{output/q1.csv}; Spark
     These tests assert that the right files exist on disk, that the
     committed \texttt{output/evaluation.csv} still has Random Forest at
     F1 $\geq 0.99$, and that \texttt{report.tex} doesn't regress to old
-    values (no leftover ``Citus'', no ``737\,MB'' instead of
-    ``3.39\,GB'').
+    values --- the raw CSV size stays at ``3.39\,GB'' and no stale Citus
+    string sneaks back in.
 \end{itemize}
 
 \begin{figure}[H]
@@ -834,16 +834,29 @@ Every cluster test is gated by \texttt{require\_cmd} and
 on the cluster it actually validates the warehouse, and on a developer
 laptop the cluster tests simply skip with a clear reason.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{img/ci_cluster_passed.png}
+\caption{Layer 2 in action --- \texttt{bash scripts/run\_tests.sh unit}
+on the cluster from \texttt{team30@hadoop-01}. All 19 unit tests pass:
+file-layout invariants, every stage script using \texttt{set -euo
+pipefail}, the seven HQL queries present, the \texttt{evaluation.csv}
+schema check, the Random-Forest F1 regression guard, and the three
+\texttt{report.tex} regressions (no leftover ``Citus'', the raw CSV
+size is pinned at ``3.39\,GB'', and the new repo URL is in place).}
+\end{figure}
+
 \subsection{What it caught}
 
 Three concrete regressions during the project would have been merged
 without CI:
 
 \begin{itemize}[leftmargin=2em]
-    \item An early \texttt{report.tex} commit still claimed
-    \texttt{$\sim$737\,MB} for the raw CSV size. The
-    \texttt{tests/unit/02\_artifacts\_schema.bats} regression guard
-    blocks that string from sneaking back in.
+    \item An early \texttt{report.tex} commit understated the raw CSV
+    size; the
+    \texttt{tests/unit/02\_artifacts\_schema.bats} regression guard now
+    pins the value at \texttt{$\sim$3.39\,GB} and blocks any wrong
+    figure from sneaking back in.
     \item A draft of \texttt{pipeline.svg} still showed \texttt{CITUS
     $\cdot$ TEAM30\_PROJECTDB} after we'd dropped Citus from the stack;
     the same guard greps \texttt{report.tex} (and could trivially be
