@@ -210,10 +210,6 @@
   .figcard{ background:#fff; border:1px solid var(--ink); padding:14px; }
   .figcard img{ display:block; width:100%; height:auto; max-height:480px; object-fit:contain; }
   .figcap{ font-family:"RoobertMono"; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-top:12px; }
-  /* Full-bleed figure for plot-focused slides: takes nearly the whole
-     content area, leaving room only for a short caption underneath. */
-  .figbig{ background:#fff; border:1px solid var(--ink); padding:18px; }
-  .figbig img{ display:block; width:100%; height:auto; max-height:600px; object-fit:contain; }
 
   /* Bar / process */
   .bar-row{ display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid rgba(10,10,10,.18); }
@@ -418,7 +414,7 @@
     <div class="grid col-2" style="margin-top:48px; gap:48px;">
       <div>
         <div class="stamp">1.3 Storage benchmark</div>
-        <h2 class="h3" style="margin-top:14px;">Four format / codec pairs, compared by size, write and scan.</h2>
+        <h2 class="h3" style="margin-top:14px;">We compared four format / codec pairs.</h2>
         <table class="tbl" style="margin-top:18px;">
           <thead><tr><th>Format</th><th>Codec</th><th class="num">Size (bytes)</th><th class="num">Write (s)</th><th class="num">Scan (s)</th></tr></thead>
           <tbody>
@@ -509,112 +505,200 @@
   </div>
 </section>
 
-<!-- ============== 9. STAGE 2 — INSIGHT 1 plot (label distribution) ============== -->
+<!-- ============== 9. STAGE 2 — INSIGHT 1 (label distribution) ============== -->
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 01 — Label distribution</span><span class="right">q1.hql</span></div>
 
   <div class="body">
-    <div class="stamp">01 · A skewed but rich target</div>
-    <h2 class="h2" style="margin-top:14px;">Benign and Malicious dominate; six rare attack types still carry signal.</h2>
+    <div class="grid col-2" style="height:100%; gap:56px;">
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">01</span>
+          <div class="stamp">A skewed but rich target</div>
+        </div>
+        <h2 class="h2" style="margin-top:18px;">Benign and Malicious dominate &mdash; six rare attack types remain useful.</h2>
+        <p class="lead" style="margin-top:18px;">The corpus is neither balanced nor degenerate: 35% benign, 28% generic Malicious, 23% DDoS, 14% port-scan, plus three rare classes that the multiclass models still need to handle.</p>
 
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q1.jpg" alt="Class share of network_connections_part"/>
+        <div style="margin-top:32px;">
+          <div class="share-row"><div class="label">Benign<span class="mono">label = "Benign"</span></div><div class="bar"><i style="width:100%"></i></div><div class="val">35.11%</div></div>
+          <div class="share-row"><div class="label">Malicious<span class="mono">label = "Malicious"</span></div><div class="bar"><i style="width:80.4%"></i></div><div class="val">28.21%</div></div>
+          <div class="share-row"><div class="label">DDoS<span class="mono">label = "Malicious DDoS"</span></div><div class="bar"><i style="width:65.8%"></i></div><div class="val">23.10%</div></div>
+          <div class="share-row"><div class="label">Port scan<span class="mono">PartOfAHorizontalPortScan</span></div><div class="bar"><i style="width:38.6%"></i></div><div class="val">13.54%</div></div>
+          <div class="share-row"><div class="label">C&amp;C / Attack / FileDownload<span class="mono">3 rare classes combined</span></div><div class="bar"><i style="width:1.3%"></i></div><div class="val">0.05%</div></div>
+        </div>
+      </div>
+
+      <div class="figcard" style="align-self:center;">
+        <img src="img/q1.jpg" alt="Distribution of labels"/>
+        <div class="figcap">Fig. 01 &nbsp;·&nbsp; Class share of <span class="mono">network_connections_part</span>. The long tail of rare attack types is the key reason the project is treated as multiclass, not binary.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============== 10. STAGE 2 — INSIGHT 2 plot (proto) ============== -->
+<!-- ============== 10. STAGE 2 — INSIGHT 2 + 5 (proto + conn_state) ============== -->
 <section class="slide">
   <div class="chrome"></div>
-  <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 02 — Protocol per label</span><span class="right">q2.hql</span></div>
+  <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insights 02 &amp; 05 — Protocol + state</span><span class="right">q2.hql, q5.hql</span></div>
 
   <div class="body">
-    <div class="stamp">02 · Almost everything is TCP</div>
-    <h2 class="h2" style="margin-top:14px;">UDP is benign DNS / ICMP; nearly every malicious connection is TCP.</h2>
+    <div class="grid col-2" style="height:100%; gap:48px;">
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">02</span>
+          <div class="stamp">Almost everything is TCP</div>
+        </div>
+        <h2 class="h3" style="margin-top:14px;">Protocol mix per label.</h2>
 
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q2.jpg" alt="Protocol usage per label"/>
+        <div class="figcard" style="margin-top:14px;">
+          <img src="img/q2.jpg" alt="Protocol usage per label"/>
+          <div class="figcap">Fig. 02 &nbsp;·&nbsp; UDP appears almost only for Benign DNS and ICMP-only flows; nearly every malicious connection is TCP.</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">05</span>
+          <div class="stamp">Failed handshakes everywhere</div>
+        </div>
+        <h2 class="h3" style="margin-top:14px;">Connection state per label.</h2>
+
+        <table class="tbl" style="margin-top:14px;">
+          <thead><tr><th>Label</th><th>Dominant <span class="mono">conn_state</span></th><th class="num">Share</th></tr></thead>
+          <tbody>
+            <tr><td>Benign</td><td class="mono">S0 (no reply)</td><td class="num">99.3%</td></tr>
+            <tr><td>Malicious</td><td class="mono">S0</td><td class="num">99.7%</td></tr>
+            <tr><td>Malicious DDoS</td><td class="mono">OTH / RSTOS0</td><td class="num">99.99%</td></tr>
+            <tr><td>Malicious C&amp;C</td><td class="mono">S0 + S3</td><td class="num">88%</td></tr>
+            <tr><td>Port scan</td><td class="mono">S0</td><td class="num">100%</td></tr>
+          </tbody>
+        </table>
+        <p class="small" style="margin-top:14px;">A SYN-only flood (<span class="mono">S0</span>) is the universal signature &mdash; benign traffic on this network is dominated by IoT devices repeatedly failing to reach a server.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============== 11. STAGE 2 — INSIGHT 3 plot (bytes) ============== -->
+<!-- ============== 11. STAGE 2 — INSIGHT 3 + 7 (bytes + packets) ============== -->
 <section class="slide">
   <div class="chrome"></div>
-  <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 03 — Bytes per label</span><span class="right">q3.hql</span></div>
+  <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insights 03 &amp; 07 — Bytes &amp; packets</span><span class="right">q3.hql, q7.hql</span></div>
 
   <div class="body">
-    <div class="stamp">03 · Volumetric attacks vs. silent scans</div>
-    <h2 class="h2" style="margin-top:14px;">DDoS averages ≈ 3.7×10⁸ orig bytes / flow — six orders of magnitude over benign.</h2>
+    <div class="grid col-2" style="height:100%; gap:48px;">
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">03</span>
+          <div class="stamp">Volumetric attacks vs. silent scans</div>
+        </div>
+        <h2 class="h3" style="margin-top:14px;">Average bytes per connection by label.</h2>
 
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q3.jpg" alt="Average bytes per label"/>
+        <div class="figcard" style="margin-top:14px;">
+          <img src="img/q3.jpg" alt="Average bytes per label"/>
+          <div class="figcap">Fig. 03 &nbsp;·&nbsp; DDoS averages ≈ <span class="mono">3.7×10⁸</span> orig bytes / flow &mdash; six orders of magnitude over benign. Port-scan and generic Malicious carry &lt; 1B per connection on average.</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">07</span>
+          <div class="stamp">Packet-rate signatures</div>
+        </div>
+        <h2 class="h3" style="margin-top:14px;">Average packets per connection.</h2>
+
+        <table class="tbl" style="margin-top:14px;">
+          <thead><tr><th>Label</th><th class="num">Avg orig pkts</th><th class="num">Avg resp pkts</th></tr></thead>
+          <tbody>
+            <tr><td>Benign</td><td class="num">3.90</td><td class="num">0.006</td></tr>
+            <tr><td>Malicious</td><td class="num">1.10</td><td class="num">0.033</td></tr>
+            <tr><td>Malicious DDoS</td><td class="num">48.10</td><td class="num">0.0004</td></tr>
+            <tr><td>C&amp;C</td><td class="num">495.4</td><td class="num">8.15</td></tr>
+            <tr><td>Attack</td><td class="num">5.34</td><td class="num">3.40</td></tr>
+            <tr><td>Port scan</td><td class="num">4.00</td><td class="num">0.00</td></tr>
+          </tbody>
+        </table>
+        <p class="small" style="margin-top:14px;">Long-lived C&amp;C sessions stand out: ~500 pkts out, with a real (8 pkt) reply &mdash; very different from one-shot scan or flood traffic.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============== 12. STAGE 2 — INSIGHT 4 plot (per capture) ============== -->
+<!-- ============== 12. STAGE 2 — INSIGHT 4 (per capture) ============== -->
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 04 — Per-capture maliciousness</span><span class="right">q4.hql</span></div>
 
   <div class="body">
-    <div class="stamp">04 · Captures cluster bimodally</div>
-    <h2 class="h2" style="margin-top:14px;">Almost all malicious or almost all benign — nothing in between.</h2>
+    <div class="grid col-2" style="height:100%; gap:56px;">
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">04</span>
+          <div class="stamp">Captures cluster bimodally</div>
+        </div>
+        <h2 class="h2" style="margin-top:18px;">Almost all malicious or almost all benign &mdash; nothing in between.</h2>
+        <p class="lead" style="margin-top:18px;">8 of the 12 captures are &gt; 79% malicious; 4 captures are &lt; 11% malicious. There is no middle ground &mdash; each PCAP was deliberately recorded around a single behaviour.</p>
 
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q4.jpg" alt="Maliciousness per capture"/>
+        <table class="tbl" style="margin-top:24px;">
+          <thead><tr><th>Capture</th><th class="num">Total flows</th><th class="num">Malicious ratio</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td class="mono">Capture-60</td><td class="num">3,581,028</td><td class="num">99.9%</td></tr>
+            <tr><td class="mono">Capture-9</td><td class="num">6,378,293</td><td class="num">99.6%</td></tr>
+            <tr><td class="mono">Capture-48</td><td class="num">3,394,338</td><td class="num">99.9%</td></tr>
+            <tr><td class="mono">Capture-3</td><td class="num">156,103</td><td class="num">97.1%</td></tr>
+            <tr><td class="mono">Capture-1</td><td class="num">1,008,748</td><td class="num">53.5%</td></tr>
+            <tr><td class="mono">Capture-44</td><td class="num">237</td><td class="num">11.0%</td></tr>
+            <tr><td class="mono">Capture-20 / 19 / 42</td><td class="num">~3,500 each</td><td class="num">&lt;1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="figcard" style="align-self:center;">
+        <img src="img/q4.jpg" alt="Maliciousness per capture"/>
+        <div class="figcap">Fig. 04 &nbsp;·&nbsp; Treat captures as <em>strata</em>, not interchangeable rows &mdash; randomly splitting at the row level can leak whole devices into both train and test.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============== 13. STAGE 2 — INSIGHT 5 plot (conn_state) ============== -->
-<section class="slide">
-  <div class="chrome"></div>
-  <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 05 — Connection state</span><span class="right">q5.hql</span></div>
-
-  <div class="body">
-    <div class="stamp">05 · Failed handshakes everywhere</div>
-    <h2 class="h2" style="margin-top:14px;">A SYN-only flood (<span class="mono">S0</span>) is the universal signature on this network.</h2>
-
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q5.jpg" alt="Connection state per label"/>
-    </div>
-  </div>
-</section>
-
-<!-- ============== 14. STAGE 2 — INSIGHT 6 plot (target ports) ============== -->
+<!-- ============== 13. STAGE 2 — INSIGHT 6 (target ports) ============== -->
 <section class="slide">
   <div class="chrome"></div>
   <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 06 — Target ports</span><span class="right">q6.hql</span></div>
 
   <div class="body">
-    <div class="stamp">06 · Telnet is still the wound</div>
-    <h2 class="h2" style="margin-top:14px;">Port 23 is the single most attacked destination — 7M+ malicious flows.</h2>
+    <div class="grid col-2" style="height:100%; gap:56px;">
+      <div>
+        <div style="display:flex; gap:18px; align-items:baseline;">
+          <span class="insight-no">06</span>
+          <div class="stamp">Telnet is still the wound</div>
+        </div>
+        <h2 class="h2" style="margin-top:18px;">Port 23 is the single most attacked destination.</h2>
+        <p class="lead" style="margin-top:18px;">Generic Malicious traffic (4M flows) and the entire port-scan class (3.4M flows) target Telnet (<span class="mono">tcp/23</span>) &mdash; the classic Mirai-family entry point. DDoS is bimodal between <span class="mono">62336</span> (Mirai-style C&amp;C echo) and HTTP <span class="mono">80</span>.</p>
 
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q6.jpg" alt="Top targeted ports per non-Benign label"/>
+        <table class="tbl" style="margin-top:24px;">
+          <thead><tr><th>Label</th><th class="num">Port</th><th class="num">Flows</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td>Malicious</td><td class="num mono">23</td><td class="num">4,055,327</td></tr>
+            <tr><td>DDoS</td><td class="num mono">62336</td><td class="num">3,578,391</td></tr>
+            <tr><td>Port scan</td><td class="num mono">23</td><td class="num">3,386,119</td></tr>
+            <tr><td>Malicious</td><td class="num mono">81</td><td class="num">2,571,979</td></tr>
+            <tr><td>DDoS</td><td class="num mono">80</td><td class="num">1,125,806</td></tr>
+            <tr><td>DDoS</td><td class="num mono">992</td><td class="num">1,008,351</td></tr>
+            <tr><td>C&amp;C</td><td class="num mono">6667</td><td class="num">6,706</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="figcard" style="align-self:center;">
+        <img src="img/q6.jpg" alt="Top targeted ports per non-Benign label"/>
+        <div class="figcap">Fig. 06 &nbsp;·&nbsp; Target-port histograms per non-Benign label. Port 23 dominance is a strong, learnable signal &mdash; it is one of the highest-importance features in the trained Random Forest.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============== 15. STAGE 2 — INSIGHT 7 plot (packets) ============== -->
-<section class="slide">
-  <div class="chrome"></div>
-  <div class="crown"><span>02 &nbsp;·&nbsp; EDA <span class="dot"></span> Insight 07 — Packets per flow</span><span class="right">q7.hql</span></div>
-
-  <div class="body">
-    <div class="stamp">07 · Packet-rate signatures</div>
-    <h2 class="h2" style="margin-top:14px;">Long-lived C&amp;C stands out — ~500 pkts out with a real 8-pkt reply.</h2>
-
-    <div class="figbig" style="margin-top:22px;">
-      <img src="img/q7.jpg" alt="Average packets per label"/>
-    </div>
-  </div>
-</section>
-
-<!-- ============== 16. STAGE 3 DIVIDER ============== -->
+<!-- ============== 14. STAGE 3 DIVIDER ============== -->
 <section class="slide divider">
   <div class="chrome"></div>
   <div class="crown"><span>Stage <span class="dot"></span> Predictive Analytics</span><span class="right">Stage / 3.0</span></div>
