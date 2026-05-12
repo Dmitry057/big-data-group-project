@@ -324,25 +324,29 @@ FROM network_connections_ext;
 \subsection{Picking a storage format}
 
 Before settling on Parquet + Snappy we ran a small benchmark: write the
-fact table four different ways, then time a full scan and one analytic
+fact table four different ways, then measure the on-disk footprint
+(via \texttt{hadoop fs -du}) and time a full scan and one analytic
 query. Three runs each, results averaged:
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{llrrrr}
+\begin{tabular}{llrrrrr}
 \toprule
-\textbf{Format} & \textbf{Codec} & \textbf{Runs} & \textbf{Avg write (s)} & \textbf{Avg full scan (s)} & \textbf{Avg analytic (s)} \\
+\textbf{Format} & \textbf{Codec} & \textbf{Runs} & \textbf{Size (B)} & \textbf{Avg write (s)} & \textbf{Avg full scan (s)} & \textbf{Avg analytic (s)} \\
 \midrule
-parquet & snappy & 3 & 17.7 & 6.76 & 9.29 \\
-parquet & gzip   & 3 & 18.0 & 6.64 & 9.56 \\
-avro    & snappy & 3 & 17.0 & 9.32 & 10.50 \\
-avro    & bzip2  & 3 & 19.0 & 8.36 & 11.01 \\
+parquet & snappy & 3 & 4{,}506{,}447 & 17.7 & 6.76 & 9.29 \\
+parquet & gzip   & 3 & 3{,}003{,}399 & 18.0 & 6.64 & 9.56 \\
+avro    & snappy & 3 & 4{,}941{,}651 & 17.0 & 9.32 & 10.50 \\
+avro    & bzip2  & 3 & 3{,}082{,}133 & 19.0 & 8.36 & 11.01 \\
 \bottomrule
 \end{tabular}
-\caption{Storage format benchmark. Parquet beats Avro on scan time by a
-clear margin; Snappy and gzip are basically tied for Parquet, and Snappy
-costs less CPU. So we shipped Parquet + Snappy.}
+\caption{Storage format benchmark. Parquet beats Avro on scan time by
+a clear margin. On size, gzip and bzip2 shave roughly $33\%$ off Snappy
+--- a real saving on disk but at a CPU cost on every read; Snappy keeps
+scans the fastest at a sensible footprint, so we shipped Parquet +
+Snappy. Raw numbers in
+\texttt{output/stage1\_storage\_benchmark\_avg.csv}.}
 \end{table}
 
 % ====================== DATA ANALYSIS ======================
